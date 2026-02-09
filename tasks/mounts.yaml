@@ -1,0 +1,17 @@
+---
+- name: MOUNTS | Configure mounts
+  ansible.posix.mount:
+    backup: "{{ item.backup | default(false) }}"
+    boot: "{{ item.boot | default(true) }}"
+    dump: "{{ item.dump | default('0') }}"
+    fstab: "{{ item.fstab | default('/etc/fstab') }}"
+    fstype: "{{ item.fstype | default(omit) }}"
+    opts: "{{ item.opts | default(omit) }}"
+    opts_no_log: "{{ item.opts_no_log | default(false) }}"
+    passno: "{{ item.passno | default('0') }}"
+    path: "{{ item.path }}"
+    src: "{{ item.src | default(omit) }}"
+    state: "{{ item.state | default('mounted') }}"
+  loop: "{{ anro_server_mounts }}"
+  loop_control:
+    label: "{{ item.path }}"

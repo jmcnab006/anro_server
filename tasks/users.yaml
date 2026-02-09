@@ -1,0 +1,14 @@
+---
+- name: USERS | Add additional users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups | default([]) }}"
+    append: "{{ item.append | default(true) }}"
+    state: "{{ item.state | default('present') }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    password: "{{ item.password | default('*') }}"
+    create_home: "{{ item.create_home | default(true) }}"
+    home: "{{ item.home | default('/home/' + item.name) }}"
+  loop: "{{ anro_server_users }}"
+  loop_control:
+    label: "{{ item.name }}"

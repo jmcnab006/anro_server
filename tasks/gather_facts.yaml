@@ -1,0 +1,6 @@
+---
+- name: FACTS | Populate service_facts
+  ansible.builtin.service_facts:
+
+- name: FACTS | Build package list
+  ansible.builtin.package_facts:

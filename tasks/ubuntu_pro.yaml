@@ -1,0 +1,43 @@
+- name: UBUNTU PRO | Install Ubuntu Pro client if host is an Ubuntu LTS release.
+  become: true
+  block:
+    - name: UBUNTU PRO | Install Ubuntu Advantage tools for hosts running <24.04.
+      ansible.builtin.apt:
+        name: ubuntu-advantage-tools
+        state: present
+      when: ansible_distribution_version is version("24.04", "<")
+
+    - name: UBUNTU PRO | Install Ubuntu Pro client for hosts running >=24.04.
+      ansible.builtin.apt:
+        name: ubuntu-pro-client
+        state: present
+      when: ansible_distribution_version is version("24.04", ">=")
+
+    - name: UBUNTU PRO | Check if machine is already attached.
+      register: _pro_attach_check
+      ansible.builtin.command:
+        cmd: /usr/bin/pro status --format=json
+      changed_when: false
+
+    - name: UBUNTU PRO | Parse pro status JSON output.
+      ansible.builtin.set_fact:
+        _pro_attach_check_json: "{{ _pro_attach_check.stdout | from_json }}"
+
+    - name: UBUNTU PRO | Attach to Ubuntu Pro subscription if host is not already attached.
+      when: not _pro_attach_check_json.attached
+      become: true
+      block:
+        - name: UBUNTU PRO | Add Ubuntu Pro configuration template.
+          ansible.builtin.template:
+            src: tmp/pro-config.yaml
+            dest: /tmp/pro-config.yaml
+            owner: root
+            group: root
+            mode: "0600"
+
+        - name: UBUNTU PRO | Configure Ubuntu Pro using configuration file.
+          register: _pro_attach_output
+          ansible.builtin.command:
+            cmd: /usr/bin/pro attach --attach-config=/tmp/pro-config.yaml
+          changed_when: _pro_attach_output.rc == 0
+          failed_when: _pro_attach_output.rc == 1

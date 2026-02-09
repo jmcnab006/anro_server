@@ -1,0 +1,14 @@
+---
+- name: SERVICES | Manage services
+  ansible.builtin.systemd_service:
+    daemon_reexec: "{{ item.daemon_reexec | default(false) }}"
+    daemon_reload: "{{ item.daemon_reload | default(false) }}"
+    enabled: "{{ item.enabled | default(omit) }}"
+    force: "{{ item.force | default(omit) }}"
+    masked: "{{ item.masked | default(omit) }}"
+    name: "{{ item.name }}"
+    no_block: "{{ item.no_block | default(false) }}"
+    state: "{{ item.state | default(omit) }}"
+  loop: "{{ anro_server_services }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,15 @@
+---
+- name: Restart anro_server timesyncd
+  ansible.builtin.service:
+    name: 'systemd-timesyncd'
+    state: 'restarted'
+
+- name: Restart anro_server snmpd
+  ansible.builtin.service:
+    name: 'snmpd'
+    state: 'restarted'
+
+- name: Restart anro_server ntpd
+  ansible.builtin.service:
+    name: 'ntp'
+    state: 'restarted'

@@ -1,0 +1,55 @@
+---
+# Switches
+#
+anro_server_debug: false
+anro_server_set_mirror: false
+#
+# System
+anro_server_timezone: America/Chicago
+anro_server_time_server: pool.ntp.org
+anro_server_tld: example.com
+#
+# Mounts
+anro_server_mounts: []
+#
+# SNMPD
+anro_server_snmpd_loopback:
+  - '127.0.0.1'
+  - '[::1]'
+
+anro_server_snmpd_addresses:
+  - "{{ ansible_host }}"
+
+anro_server_snmpd_allowed:
+  - 'rocommunity public 127.0.0.1'
+
+anro_server_snmp_sys_location: 'America/Chicago'
+anro_server_snmp_syscontact: 'root@localhost'
+anro_server_snmp_sysservices: '72'
+anro_server_snmpd_config: []
+#
+# Users and groups
+anro_server_groups: []
+anro_server_users: []
+#
+# MOTD
+anro_server_use_default_motd: true
+anro_server_custom_motd: []
+#
+# SSH
+anro_server_authorized_keys: []
+#
+# Packages
+anro_server_add_packages: []
+anro_server_remove_packages: []
+#
+# Services
+anro_server_services: []
+#
+# Ubuntu Pro
+anro_server_ubuntu_pro_enable: false
+anro_server_ubuntu_pro_token: ''
+anro_server_ubuntu_pro_services:
+  - 'esm-apps'
+  - 'esm-infra'
+  - 'livepatch'

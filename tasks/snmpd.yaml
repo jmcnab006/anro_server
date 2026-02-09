@@ -1,0 +1,23 @@
+---
+- name: SNMPD | Ensure include directory exists
+  ansible.builtin.file:
+    path: /etc/snmp/snmpd.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: SNMPD | Apply Bridgeline snmpd config
+  ansible.builtin.template:
+    src: etc/snmp/snmpd.conf.j2
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart snmpd
+
+- name: SNMPD | Start snmpd service
+  ansible.builtin.service:
+    name: snmpd
+    state: started
+    enabled: true

@@ -1,0 +1,46 @@
+---
+- name: All host variables
+  hosts: all
+  become: true
+  vars:
+    anro_server_timezone: "America/Chicago"
+    anro_server_tld: example.com
+    anro_server_snmpd_allowed:
+      - 'rocommunity public 10.1.0.0/24'
+      - 'rocommunity example 127.0.0.0/24'
+    anro_server_snmpd_addresses:
+      - 10.1.0.250
+    anro_server_snmpd_config:
+      - "view    systemview    included   .1.3.6.1.2.1.1"
+      - "view    systemview    included   .1.3.6.1.2.1.25.1.1"
+    anro_server_groups:
+      - name: usi-users
+      - name: ssl-cert
+        system: true
+      - name: maxscale
+        system: true
+    anro_server_users:
+      - name: development
+        state: present
+        groups:
+          - sudoers
+          - docker
+        shell: "/bin/bash"
+        password: "somepass"
+      - name: maxscale
+        state: present
+        groups:
+          - maxscale
+          - ssl-cert
+        password: "anotherpass"
+        shell: /bin/false
+        append: false
+        create_home: false
+    anro_server_custom_motd:
+      - line 1
+      - ""
+      - line 2
+    anro_server_authorized_keys:
+      - name: root
+        keys:
+          - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICszXCE4ld2n34gsHQOzIdGvDRPSQOBcXBWrIcDk0vZxo root@somehost'

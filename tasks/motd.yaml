@@ -1,0 +1,15 @@
+---
+- name: MOTD | Add custom motd
+  ansible.builtin.template:
+    src: etc/update-motd.d/99-user-motd.j2
+    dest: /etc/update-motd.d/99-user-motd
+    mode: '0655'
+  become: true
+
+- name: MOTD | Ensure file /etc/motd exists
+  ansible.builtin.file:
+    dest: /etc/motd
+    mode: '0655'
+    state: touch
+    modification_time: preserve
+    access_time: preserve

@@ -1,0 +1,79 @@
+---
+- name: Gather facts
+  ansible.builtin.import_tasks: gather_facts.yaml
+  tags:
+    - always
+
+- name: Set system hostname, time, and kernel parameters
+  ansible.builtin.import_tasks: system.yaml
+  tags:
+    - server
+    - server-system
+
+- name: Configure groups
+  ansible.builtin.import_tasks: groups.yaml
+  tags:
+    - server
+    - server-groups
+
+- name: Configure users
+  ansible.builtin.import_tasks: users.yaml
+  tags:
+    - server
+    - server-users
+
+- name: Configure mounts
+  when: anro_server_mounts is defined and anro_server_mounts | length > 0
+  ansible.builtin.import_tasks: mounts.yaml
+  tags:
+    - server
+    - server-mounts
+
+- name: Configure authorized_keys
+  ansible.builtin.import_tasks: authorized_keys.yaml
+  tags:
+    - server
+    - server-keys
+
+- name: Configure baseline packages
+  ansible.builtin.import_tasks: packages.yaml
+  tags:
+    - server
+    - server-packages
+
+- name: Configure services
+  when:
+    - ansible_facts['service_mgr'] == 'systemd'
+    - anro_server_services is defined
+    - anro_server_services | length > 0
+    - "item.name + '.service' in ansible_facts.services or item.name in ansible_facts.services"
+  ansible.builtin.import_tasks: services.yaml
+  tags:
+    - server
+    - server-services
+
+- name: Configure MOTD
+  ansible.builtin.import_tasks: motd.yaml
+  tags:
+    - server
+    - server-motd
+
+- name: Configure SNMPD
+  ansible.builtin.import_tasks: snmpd.yaml
+  tags:
+    - server
+    - server-snmpd
+
+- name: Configure Ubuntu Pro
+  when:
+    - ansible_distribution == "Ubuntu" and "LTS" in ansible_lsb.description
+    - ansible_distribution_version is version("16.04", ">=")
+    - anro_server_ubuntu_pro_enable | bool
+  ansible.builtin.import_tasks: ubuntu_pro.yaml
+  tags:
+    - server
+    - server-ubuntu-pro
+    - ubuntu-pro
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

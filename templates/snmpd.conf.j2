@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+
+sysLocation    {{ anro_server_snmpd_location }}
+sysContact     {{ anro_server_snmpd_contact }}
+sysServices    {{ anro_server_snmpd_services }}
+
+master  agentx
+agentaddress  {{ anro_server_snmpd_loopback | join(',') }},{{ anro_server_snmpd_addresses | join(',') }}
+
+{% for rule in anro_server_snmpd_allowed  %}
+{{ rule }}
+{% endfor %}
+
+{% for config in anro_server_snmpd_config  %}
+{{ config }}
+{% endfor %}
+
+includeDir /etc/snmp/snmpd.conf.d

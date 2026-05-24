@@ -1,5 +1,6 @@
 ---
 - name: KEYS | Register users home directories # registers getent_passwd variable
+  become: true
   ansible.builtin.getent:
     database: passwd
 

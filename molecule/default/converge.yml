@@ -1,0 +1,10 @@
+---
+- name: MOLECULE | Converge
+  hosts: all
+
+  vars:
+    anro_server_kernel_parameters:
+      - name: net.ipv4.tcp_syncookies
+        value: '1'
+  roles:
+    - anro_server

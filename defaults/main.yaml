@@ -3,53 +3,51 @@
 #
 anro_server_debug: false
 anro_server_set_mirror: false
+anro_server_time_use_timesyncd: "{{ __anro_server_time_use_timesyncd | default(true) }}"
 #
 # System
-anro_server_timezone: America/Chicago
-anro_server_time_server: pool.ntp.org
 anro_server_tld: example.com
+anro_server_kernel_parameters: []
+#
+# Time
+anro_server_timezone: America/Chicago
+anro_server_time_server:
+  - pool.ntp.org
+anro_server_time_server_fallback: []
+anro_server_timesyncd_root_distance_max_sec: 5
+anro_server_timesyncd_poll_interval_min_sec: 32
+anro_server_timesyncd_poll_interval_max_sec: 2048
 #
 # Mounts
 anro_server_mounts: []
 #
 # SNMPD
-anro_server_snmpd_loopback:
-  - '127.0.0.1'
-  - '[::1]'
-
+anro_server_snmpd_loopback: "{{ __anro_server_snmpd_loopback | default(['127.0.0.1', '[::1]']) }}"
 anro_server_snmpd_addresses:
   - "{{ ansible_host }}"
-
 anro_server_snmpd_allowed:
   - 'rocommunity public 127.0.0.1'
 
-anro_server_snmp_sys_location: 'America/Chicago'
-anro_server_snmp_syscontact: 'root@localhost'
-anro_server_snmp_sysservices: '72'
+anro_server_snmpd_location: 'America/Chicago'
+anro_server_snmpd_contact: 'root@localhost'
+anro_server_snmpd_services: '72'
 anro_server_snmpd_config: []
 #
 # Users and groups
 anro_server_groups: []
 anro_server_users: []
+anro_server_sudoers: []
 #
 # MOTD
-anro_server_use_default_motd: true
 anro_server_custom_motd: []
 #
 # SSH
 anro_server_authorized_keys: []
 #
 # Packages
+anro_server_ubuntu_mirror: 'us.archive.ubuntu.com'
 anro_server_add_packages: []
 anro_server_remove_packages: []
 #
 # Services
 anro_server_services: []
-#
-# Ubuntu Pro
-anro_server_ubuntu_pro_enable: false
-anro_server_ubuntu_pro_token: ''
-anro_server_ubuntu_pro_services:
-  - 'esm-apps'
-  - 'esm-infra'
-  - 'livepatch'

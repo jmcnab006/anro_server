@@ -1,62 +1,38 @@
 ---
-- name: PACKAGES | Replace apt mirror on ubuntu
-  become: true
+- name: PACKAGES | Set apt mirror on ubuntu
+  when:
+    - anro_server_set_mirror
+    - ansible_distribution | lower == 'ubuntu'
   ansible.builtin.template:
-    src: etc/apt/sources.list.ubuntu.j2
+    src: sources.list.ubuntu.j2
     dest: /etc/apt/sources.list
     backup: true
     mode: '0644'
-  when:
-    - ansible_distribution|lower == 'ubuntu'
-    - anro_server_set_mirror | bool
 
 - name: PACKAGES | Update apt package list
+  when: ansible_pkg_mgr == 'apt'
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: 3600
-  become: true
+    cache_valid_time: 10800
+  changed_when: false
+  failed_when: false
+
+- name: PACKAGES | Update yum/dnf package list
+  when: ansible_pkg_mgr == 'dnf'
+  ansible.builtin.dnf:
+    update_cache: true
   changed_when: false
 
 - name: PACKAGES | Ensure python3 is installed
-  ansible.builtin.apt:
+  ansible.builtin.package:
     state: present
     name: python3
-  become: true
 
-- name: PACKAGES | Install Bridgeline recommended packages
-  ansible.builtin.apt:
-    state: present
-    name:
-      - conntrack
-      - iotop
-      - iftop
-      - pv
-      - locate
-      - snmpd
-      - zip
-      - unzip
-      - "{{ 'duf' if (ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>')) else 'dfc' }}"
-      - ncdu
-
-- name: PACKAGES | Install qemu-guest-agent
-  ansible.builtin.apt:
-    state: present
-    name: qemu-guest-agent
-  when: ansible_facts['system_vendor'] == 'QEMU' and ansible_facts['virtualization_role'] == 'guest'
-
-- name: PACKAGES | Remove Bridgeline unnecessary packages
-  ansible.builtin.apt:
-    state: absent
-    autoremove: true
-    name:
-      - cloud-init
-      - net-tools
-
-- name: PACKAGES | Install additional packages
+- name: PACKAGES | Install packages
   when:
     - anro_server_add_packages is defined
     - anro_server_add_packages | length > 0
-  ansible.builtin.apt:
+  ansible.builtin.package:
     state: present
     name: "{{ anro_server_add_packages | flatten }}"
 
@@ -64,6 +40,6 @@
   when:
     - anro_server_remove_packages is defined
     - anro_server_remove_packages | length > 0
-  ansible.builtin.apt:
+  ansible.builtin.package:
     state: absent
     name: "{{ anro_server_remove_packages | flatten }}"

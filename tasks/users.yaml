@@ -1,5 +1,5 @@
 ---
-- name: USERS | Add additional users
+- name: USERS | Add users
   ansible.builtin.user:
     name: "{{ item.name }}"
     groups: "{{ item.groups | default([]) }}"
@@ -10,5 +10,17 @@
     create_home: "{{ item.create_home | default(true) }}"
     home: "{{ item.home | default('/home/' + item.name) }}"
   loop: "{{ anro_server_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: USERS | Install sudoers rules
+  ansible.builtin.template:
+    src: sudoers-rule.j2
+    dest: "/etc/sudoers.d/50-{{ item.name }}"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: "/usr/sbin/visudo -cf %s"
+  loop: "{{ anro_server_sudoers }}"
   loop_control:
     label: "{{ item.name }}"

@@ -1,0 +1,3 @@
+{{ ansible_managed | comment }}
+
+{{ item.subjects | join(',') }} {{ item.hosts | default(['ALL']) | join(',') }}=({{ item.runas_users | default(['ALL']) | join(',') }}{% if item.runas_groups is defined %}:{{ item.runas_groups | join(',') }}{% endif %}) {% if item.nopasswd | default(false) %}NOPASSWD: {% endif %}{{ item.commands | join(', ') }}

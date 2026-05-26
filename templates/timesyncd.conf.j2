@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+[Time]
+NTP={{ anro_server_time_server | join(' ') }}
+{% if anro_server_time_server_fallback and anro_server_time_server_fallback | length > 0 %}
+FallbackNTP={{ anro_server_time_server_fallback | join(' ') }}
+{% endif %}
+RootDistanceMaxSec={{ anro_server_timesyncd_root_distance_max_sec }}
+PollIntervalMinSec={{ anro_server_timesyncd_poll_interval_min_sec }}
+PollIntervalMaxSec={{ anro_server_timesyncd_poll_interval_max_sec }}

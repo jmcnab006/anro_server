@@ -1,0 +1,12 @@
+---
+- name: MOLECULE | Verify
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: VERIFY | Assert hostname matches inventory_hostname
+      ansible.builtin.assert:
+        that:
+          - ansible_hostname == inventory_hostname
+        fail_msg: "Hostname is '{{ ansible_hostname }}', expected '{{ inventory_hostname }}'"
+        success_msg: "Hostname correctly set to '{{ ansible_hostname }}'"

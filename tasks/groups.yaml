@@ -1,6 +1,6 @@
 ---
 - name: GROUPS | Add additional groups
-  ansible.builtin.user:
+  ansible.builtin.group:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
     system: "{{ item.system | default('false') }}"

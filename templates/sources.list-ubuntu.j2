@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }} main restricted
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-updates main restricted
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }} universe
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-updates universe
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }} multiverse
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-updates multiverse
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-backports main restricted universe multiverse
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-security main restricted
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-security universe
+deb http://{{ anro_server_ubuntu_mirror }}/ubuntu/archive {{ ansible_distribution_release }}-security multiverse

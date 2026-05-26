@@ -1,0 +1,31 @@
+---
+- name: TIME | Ensure tzdata is installed
+  ansible.builtin.package:
+    name: tzdata
+    state: present
+
+- name: TIME | Set timezone to {{ anro_server_timezone }}
+  community.general.timezone:
+    name: "{{ anro_server_timezone }}"
+
+- name: BLOCK | Setup systemd-timesyncd
+  when: anro_server_time_use_timesyncd
+  block:
+    - name: TIME | Ensure systemd-timesyncd is installed
+      ansible.builtin.package:
+        name: systemd-timesyncd
+        state: present
+
+    - name: TIME | Ensure systemd-timesyncd is enabled
+      ansible.builtin.service:
+        name: systemd-timesyncd
+        enabled: true
+
+    - name: TIME | Set timesyncd ntp servers to "{{ anro_server_time_server }}"
+      ansible.builtin.template:
+        src: timesyncd.conf.j2
+        dest: /etc/systemd/timesyncd.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart anro_server timesyncd

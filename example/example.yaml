@@ -42,5 +42,5 @@
       - line 2
     anro_server_authorized_keys:
       - name: root
-        keys:
+        authorized_keys:
           - 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICszXCE4ld2n34gsHQOzIdGvDRPSQOBcXBWrIcDk0vZxo root@somehost'

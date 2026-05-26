@@ -1,9 +1,9 @@
 ---
 argument_specs:
   main:
-    short_description: 'Install baseline packages and configurations for Bridgeline Debian and Ubuntu hosts'
+    short_description: 'Install baseline packages and configurations for supported Linux servers'
     description: >
-      Installs mirrors and packages, sets hostname, configures NTP, and tunes kernel parameters for a consistent server baseline.
+      Installs packages, sets hostname, configures NTP, SNMPD, and other services, and tunes kernel parameters for a consistent server baseline.
     author: Bridgeline
     options:
       anro_server_timezone:

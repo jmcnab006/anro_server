@@ -1,0 +1,71 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: podman
+
+platforms:
+  - name: anro-server-ubuntu2404
+    image: docker.io/geerlingguy/docker-ubuntu2404-ansible
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /run
+      - /tmp
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+
+  - name: anro-server-ubuntu2204
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /run
+      - /tmp
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+
+  - name: anro-server-ubuntu2004
+    image: docker.io/geerlingguy/docker-ubuntu2004-ansible
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /run
+      - /tmp
+    capabilities:
+      - SYS_ADMIN
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callback_whitelist: profile_tasks, timer, yaml
+    ssh_connection:
+      pipelining: false
+  inventory:
+    group_vars:
+      all:
+        anro_server_timezone: "America/Chicago"
+        anro_server_time_server: "pool.ntp.org"
+        anro_server_time_use_timesyncd: true
+
+        anro_server_kernel_parameters:
+          - name: vm.swappiness
+            value: '0'
+          - name: net.ipv4.tcp_syncookies
+            value: '1'
+          - name: kernel.panic
+            value: '10'
+
+verifier:
+  name: ansible
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

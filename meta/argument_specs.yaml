@@ -6,18 +6,52 @@ argument_specs:
       Installs packages, sets hostname, configures NTP, SNMPD, and other services, and tunes kernel parameters for a consistent server baseline.
     author: Bridgeline
     options:
+      anro_server_debug:
+        type: 'bool'
+        default: false
+        description: 'Enable role debug mode for additional output.'
+      anro_server_set_mirror:
+        type: 'bool'
+        default: false
+        description: 'Set the APT mirror to the specific mirror.'
+      anro_server_time_use_timesyncd:
+        type: 'bool'
+        default: true
+        description: 'Use timesyncd for time synchronization instead of chronyd or ntpd.'
+      anro_server_tld:
+        type: 'str'
+        default: 'example.com'
+        description: 'Top level domain for the fully qualified hostname and message-of-the-day template.'
+      anro_server_kernel_parameters:
+        type: 'list'
+        elements: 'dict'
+        default: []
+        description: 'A list of dictionaries for configuring kernel parameters using the ansible.posix.sysctl module.'
       anro_server_timezone:
         type: 'str'
         default: 'America/Chicago'
         description: 'Sets the timezone using IANA timezone names.'
       anro_server_time_server:
         type: 'str'
-        default: 'ntp.usinternet.com'
+        default: 'pool.ntp.org'
         description: 'NTP server to use for time synchronization.'
-      anro_server_tld:
-        type: 'str'
-        default: 'usinternet.com'
-        description: 'Top level domain for the fully qualified hostname and message-of-the-day template.'
+      anro_server_time_server_fallback:
+        type: 'list'
+        elements: 'str'
+        default: []
+        description: 'A list of fallback NTP servers to use if the primary server is unreachable.'
+      anro_server_timesyncd_root_distance_max_sec:
+        type: 'int'
+        default: 5
+        description: 'Maximum root distance in seconds for timesyncd to consider a time source valid.'
+      anro_server_timesyncd_poll_interval_min_sec:
+        type: 'int'
+        default: 32
+        description: 'Minimum poll interval in seconds for timesyncd.'
+      anro_server_timesyncd_poll_interval_max_sec:
+        type: 'int'
+        default: 2048
+        description: 'Maximum poll interval in seconds for timesyncd.'
       anro_server_mounts:
         type: 'list'
         elements: 'dict'
@@ -83,8 +117,20 @@ argument_specs:
         description: 'Binding addresses for snmpd daemon.'
       anro_server_snmpd_allowed:
         type: 'list'
-        default: ['rocommunity public 10.1.0.0/24']
+        default: ['rocommunity public 127.0.0.1']
         description: 'List of rocommunities for the SNMPD configuration template.'
+      anro_server_snmpd_location:
+        type: 'str'
+        default: 'America/Chicago'
+        description: 'Location string for the SNMPD configuration template.'
+      anro_server_snmpd_contact:
+        type: 'str'
+        default: 'root@localhost'
+        description: 'Contact string for the SNMPD configuration template.'
+      anro_server_snmpd_services:
+        type: 'str'
+        default: '72'
+        description: 'Services value for the SNMPD configuration template.'
       anro_server_snmpd_config:
         type: 'list'
         default: []
@@ -155,10 +201,12 @@ argument_specs:
           home:
             type: 'path'
             description: 'Set the user home directory. Defaults to /home/<username>'
-      anro_server_use_default_motd:
-        type: 'bool'
-        default: true
-        description: 'Include the default message-of-the-day template.'
+      anro_server_sudoers:
+        type: 'list'
+        elements: 'dict'
+        default: []
+        description: >
+          List of dictionaries for additional sudoers according to the ansible.posix.sudoers module
       anro_server_custom_motd:
         type: 'list'
         elements: 'str'
@@ -169,6 +217,10 @@ argument_specs:
         elements: 'dict'
         default: []
         description: 'A list of dicts for adding authorized keys to named users.'
+      anro_server_ubuntu_mirror:
+        type: 'str'
+        default: 'us.archive.ubuntu.com'
+        description: 'Ubuntu mirror to use for APT package management.'
       anro_server_add_packages:
         type: 'list'
         elements: 'str'
@@ -179,10 +231,6 @@ argument_specs:
         elements: 'str'
         default: []
         description: 'A list of strings for removing unwanted packages.'
-      anro_server_set_mirror:
-        type: 'bool'
-        default: false
-        description: 'Set the APT mirror to the Bridgeline mirror.'
       anro_server_services:
         type: 'list'
         elements: 'dict'
@@ -217,23 +265,3 @@ argument_specs:
           state:
             type: 'str'
             description: 'State of the service.'
-      anro_server_debug:
-        type: 'bool'
-        default: false
-        description: 'Enable role debug mode for additional output.'
-      anro_server_ubuntu_pro_enable:
-        type: 'bool'
-        default: false
-        description: 'Enable Ubuntu Pro services.'
-      usi_ubuntu_pro_services:
-        type: 'list'
-        elements: 'str'
-        default:
-          - 'esm-apps'
-          - 'esm-infra'
-          - 'livepatch'
-        description: 'List of Pro services to enable.'
-      usi_ubuntu_pro_token:
-        type: 'str'
-        default: ''
-        description: 'Ubuntu Pro services registration token.'

@@ -1,0 +1,6 @@
+---
+__anro_server_time_use_timesyncd: true
+
+__anro_server_snmpd_loopback:
+  - '127.0.0.1'
+  - '[::1]'
